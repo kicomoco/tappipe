@@ -1,8 +1,8 @@
 import argparse
 import sys
-import serial # type: ignore
+import serial
 import tappipe
-import paho.mqtt.client as mqtt # type: ignore
+import paho.mqtt.client as mqtt
 import json
 import pickle
 
