@@ -5,7 +5,7 @@ with open("Readme.md", "r") as f:
 
 setup(
 	name="tappipe",
-	version="0.0.4",
+	version="0.0.5",
 	description="Tigo TAP->CCA RS485 Power Report Decoder",
 	package_dir={"": "src"},
 	packages=['tappipe'],
