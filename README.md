@@ -4,6 +4,13 @@ More info available at https://github.com/kicomoco/tappipe
 
 A big thank you to willglyn (https://github.com/willglynn/taptap) whose work in documenting the protocol and taptap program (written in rust) allowed me to create this python version.
 
+## PIP
+This package has been built and uploaded to pypi, and can be installed with pip.
+```
+pip install tappipe
+```
+Please Note: obviously this command may be different on your system, pip, pip3, python -m pip, python3 -m pip....adjust as necessary!
+
 ## Example Scripts
 In the examples folder is an example mqtt script, that takes command line arguments for specifying MQTT server and the serial port to open
 ```
