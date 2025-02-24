@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 import json
 import pickle
 import logging
+from tappipe.stringhex import stringhex
 
 logging.basicConfig(level=logging.NOTSET)
 
@@ -34,11 +35,7 @@ mqttc.connect(args.mqtt_server,1883 if args.mqtt_port == None else args.mqtt_por
 
 mqttc.loop_start()
 
-def getHex(bytes, sep=' '):
-	return sep.join("{0:02x}".format(x) for x in bytes)
-
-stream = tappipe.parser([], False, logging.NOTSET)
-#stream.setDebug(True)
+stream = tappipe.parser([])
 
 nodeTable = {}
 
@@ -46,7 +43,7 @@ def nodeTableAscii(nodeTable):
 	str = "----------------------------------\n"
 	str += "| NODE | ADDRESS                 |\n"
 	for nodeId in nodeTable:
-		str += f"| {nodeId:04} | " + getHex(nodeTable[nodeId],':') + " |\n"
+		str += f"| {nodeId:04} | " + stringhex(nodeTable[nodeId],':') + " |\n"
 	str += "----------------------------------\n"
 	return str
 
@@ -80,10 +77,10 @@ while (True):
 						if nodeId in nodeTable.keys():
 							address = nodeTable[nodeId]
 							mqttc.publish(
-								args.mqtt_prefix+getHex(address,':'),
+								args.mqtt_prefix+stringhex(address,':'),
 								json.dumps({
 									"NodeID":nodeId,
-									"Address":getHex(address,':'),
+									"Address":stringhex(address,':'),
 									"VIN":fr.processor.decoded['packets'][i].decoded['vin'],
 									"VOUT":fr.processor.decoded['packets'][i].decoded['vout'],
 									"DUTY":fr.processor.decoded['packets'][i].decoded['duty'],
