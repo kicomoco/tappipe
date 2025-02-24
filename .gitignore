@@ -402,3 +402,4 @@ FodyWeavers.xsd
 build
 dist
 *.egg-info
+.vscode
