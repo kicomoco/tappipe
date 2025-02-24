@@ -1,12 +1,17 @@
 import struct
+import logging
 
 class node_table:
 	debug = False
+	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
 	decoded = {}
-	def __init__(self, parent=None, bytes=[], debug=False):
+	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
+		self.loglevel = logging
 		self.debug = debug
+		if (self.debug):
+			self.loglevel = logging.DEBUG
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {}
@@ -20,6 +25,9 @@ class node_table:
 			(address, nodeid) = struct.unpack('>8sH',self.bytes[start:start+10])
 			self.decoded['table'][nodeid] = address
 			start += 10
-		if (self.debug):
-			print("Node Table",self.decoded['records'])
-			print("Table:",self.decoded['table'])
+		logging.info("Node Table",self.decoded['records'])
+		logging.info("Table:",self.decoded['table'])
+	def setDebug(self, debug):
+		self.debug = debug
+	def setLogLevel(self, logLevel):
+		self.loglevel = logLevel

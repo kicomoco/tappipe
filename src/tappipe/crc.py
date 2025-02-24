@@ -1,4 +1,9 @@
+import logging
+from .stringhex import stringhex
+
 class crc:
+	debug = False
+	loglevel = logging.NOTSET
 	table = [
 		0x0000, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf, 0x8c48, 0x9dc1, 0xaf5a, 0xbed3,
 		0xca6c, 0xdbe5, 0xe97e, 0xf8f7, 0x1081, 0x0108, 0x3393, 0x221a, 0x56a5, 0x472c, 0x75b7, 0x643e,
@@ -23,13 +28,22 @@ class crc:
 		0xf78f, 0xe606, 0xd49d, 0xc514, 0xb1ab, 0xa022, 0x92b9, 0x8330, 0x7bc7, 0x6a4e, 0x58d5, 0x495c,
 		0x3de3, 0x2c6a, 0x1ef1, 0x0f78,
 	]
-	def __init__(self, bytes=[], debug=False):
+	def __init__(self, bytes=[], debug=False, logging=logging.NOTSET):
+		self.loglevel = logging
 		self.bytes = bytes
 		self.debug = debug
 		if (self.debug):
-			print(" ".join("{0:02x}".format(x) for x in self.bytes))
+			self.loglevel = logging.DEBUG
+			logging.debug("CRC bytes %s", stringhex(self.bytes))
+	def setDebug(self, debug):
+		self.debug = debug
+	def setLogLevel(self, logLevel):
+		self.loglevel = logLevel
 	def check(self):
 		crc = 0x8408
 		for i in self.bytes:
 			crc = self.table[(crc & 0xFF) ^ i] ^ (crc >> 8)
-		return ((crc & 0xFF) << 8) + (crc >> 8)
+			logging.debug("CRC %04x", crc)
+		crc = ((crc & 0xFF) << 8) + (crc >> 8)
+		logging.debug("CRC is %04x", crc)
+		return crc

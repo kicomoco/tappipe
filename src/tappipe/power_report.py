@@ -1,21 +1,25 @@
 import struct
 from .enums import pvtype
-
-def getHex(bytes):
-        return " ".join("{0:02x}".format(x) for x in bytes)
+import logging
+from .stringhex import stringhex
 
 class power_report:
 	debug = False
+	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
 	decoded = {'nodeid':None,'shortaddress':None,'vin':None,'vout':None,'duty':None,'ampsin':None,'temp':None,'slot':None,'rssi':None}
-	def __init__(self, parent=None, bytes=[], debug=False):
+	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
+		self.loglevel = logging
 		self.debug = debug
+		if (self.debug):
+			self.loglevel = logging.DEBUG
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {'nodeid':None,'shortaddress':None,'vin':None,'vout':None,'duty':None,'ampsin':None,'temp':None,'slot':None,'rssi':None}
 		
 		if (len(self.bytes) < 17):
+			logging.info("Power Report: Not enough bytes")
 			return
 		(self.decoded['nodeid'],self.decoded['shortaddress'],self.decoded['slot']) = struct.unpack('>xHHxxxxxxxxxxxxH',self.bytes[0:19])
 		self.decoded['vin'] = ((self.bytes[7] << 4) + (self.bytes[8] >> 4)) * 0.05
@@ -25,9 +29,12 @@ class power_report:
 		self.decoded['temp'] = (((self.bytes[12] & 0xf) << 8) + self.bytes[13]) * 0.1
 		(self.decoded['slot'],) = struct.unpack('>H',self.bytes[17:19])
 		self.decoded['rssi'] = self.bytes[19]
-		print("Node",self.decoded['nodeid'],"Slot",self.decoded['slot'],"VIN",self.decoded['vin'],"VOUT",self.decoded['vout'],"AMPS",self.decoded['ampsin'],"Temp",self.decoded['temp'],"RSSI",self.decoded['rssi'])
-		if (self.debug):
-			print("Power Report",self.decoded)
-			print("Bytes:",getHex(self.bytes))
+		logging.info("Node",self.decoded['nodeid'],"Slot",self.decoded['slot'],"VIN",self.decoded['vin'],"VOUT",self.decoded['vout'],"AMPS",self.decoded['ampsin'],"Temp",self.decoded['temp'],"RSSI",self.decoded['rssi'])
+		logging.debug("Power Report",self.decoded)
+		logging.debug("Bytes:",stringhex(self.bytes))
+	def setDebug(self, debug):
+		self.debug = debug
+	def setLogLevel(self, logLevel):
+		self.loglevel = logLevel
 	def getType(self):
 		return pvtype.POWER_REPORT.value

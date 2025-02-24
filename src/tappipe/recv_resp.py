@@ -2,18 +2,23 @@ import struct
 from .enums import pvtype
 from .power_report import power_report
 from .topology_report import topology_report
+import logging
 
 def getHex(bytes):
 	return " ".join("{0:02x}".format(x) for x in bytes)
 
 class recv_resp:
 	debug = False
+	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
 	decoded = {'rxBuffers':None,'txBuffers':None,'packet_number':None,'slot_number':None,'packets':[]}
 	processor = None
-	def __init__(self, parent=None, bytes=[], debug=False):
+	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
+		self.loglevel = logging
 		self.debug = debug
+		if (self.debug):
+			self.loglevel = logging.DEBUG
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {'rxBuffers':None,'txBuffers':None,'packet_number':None,'slot_number':None,'packets':[]}
@@ -21,6 +26,7 @@ class recv_resp:
 
 
 		if (len(self.bytes) < 2):
+			logging.info("Recv Resp: Not enough bytes")
 			return
 
 		(status,) = struct.unpack('>H',self.bytes[0:2])
@@ -69,14 +75,19 @@ class recv_resp:
 		else:
 			packetLength = datalen
 
+		logging.info("%d packets of %d length", packets, packetLength)
 
 		for i in range(packets):
 			if (position >= len(self.bytes)):
 				return
 			if (self.bytes[position] == pvtype.POWER_REPORT.value):
-				self.decoded['packets'].append(power_report(self, self.bytes[position:position+packetLength]))
+				self.decoded['packets'].append(power_report(self, self.bytes[position:position+packetLength], self.debug, self.loglevel))
 			if (self.bytes[position] == pvtype.TOPOLOGY_REPORT.value):
-				self.decoded['packets'].append(topology_report(self, self.bytes[position:position+packetLength]))
+				self.decoded['packets'].append(topology_report(self, self.bytes[position:position+packetLength], self.debug, self.loglevel))
 			position += packetLength
+	def setDebug(self, debug):
+		self.debug = debug
+	def setLogLevel(self, logLevel):
+		self.loglevel = logLevel
 
 
