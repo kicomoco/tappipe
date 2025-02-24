@@ -22,3 +22,7 @@ usage: tappipe [-h] -s MQTT_SERVER [-p MQTT_PORT] [-u MQTT_USERNAME]
 The processor takes a byte array (in the mqtt example it is read from the serial port), and when it has a valid frame this is returned as an object.
 
 Within the object it can be checked for the type of frame, the type of pv data (if exists), cmd type etc and then access the data packets in a parsed format for Power Reports.
+
+## TODO
+- Implement logging using a logging module rather than print
+- Implement unit testing so can check nothing breaks with each revision
