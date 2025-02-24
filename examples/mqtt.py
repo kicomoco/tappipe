@@ -5,6 +5,7 @@ import tappipe
 import paho.mqtt.client as mqtt
 import json
 import pickle
+import logging
 
 parser = argparse.ArgumentParser(
     prog="tappipe",
@@ -34,7 +35,7 @@ mqttc.loop_start()
 def getHex(bytes, sep=' '):
 	return sep.join("{0:02x}".format(x) for x in bytes)
 
-stream = tappipe.parser()
+stream = tappipe.parser([], False, logging.NOTSET)
 #stream.setDebug(True)
 
 nodeTable = {}
