@@ -4,17 +4,11 @@ from .node_table import node_table
 import logging
 
 class cmd_resp:
-	debug = False
-	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
 	decoded = {}
 	processor = None
-	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
+	def __init__(self, parent=None, bytes=[]):
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {}
@@ -25,7 +19,7 @@ class cmd_resp:
 		self.decoded['data'] = bytearray(self.bytes[4:])
 		if (self.decoded['type'] == cmdtype.NODE_TABLE.value):
 			logging.info("CMD Type is NODE_TABLE")
-			self.processor = node_table(self, self.decoded['data'], self.debug, self.loglevel)
+			self.processor = node_table(self, self.decoded['data'])
 	def setDebug(self, debug):
 		self.debug = debug
 	def setLogLevel(self, logLevel):

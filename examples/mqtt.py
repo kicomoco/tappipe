@@ -7,6 +7,8 @@ import json
 import pickle
 import logging
 
+logging.basicConfig(level=logging.NOTSET)
+
 parser = argparse.ArgumentParser(
     prog="tappipe",
 	description="Tigo TAP->CCA RS485 Power Report Decoder",

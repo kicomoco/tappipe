@@ -7,11 +7,9 @@ import logging
 from .stringhex import stringhex
 
 class frame:
-	debug = False
-	loglevel = logging.NOTSET
 	bytes = []
 	failedCRC = False
-	decoded = {'address':None,'type':None}
+	decoded = {}
 	escapeItems = [
 		([0x7e, 0x0], [0x7e]),
 		([0x7e, 0x1], [0x24]),
@@ -22,11 +20,7 @@ class frame:
 		([0x7e, 0x6], [0xa5])
 	]
 	processor = None
-	def __init__(self, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
+	def __init__(self, bytes=[]):
 		self.bytes = bytearray(bytes)
 		self.decoded = {'address':None,'type':None}
 		self.processor = None
@@ -69,8 +63,8 @@ class frame:
 	def process(self):
 		if (self.getType() == frametype.RECV_RESP.value):
 			logging.info("Frame Type is RECV_RESP")
-			self.processor = recv_resp(self, self.decoded['data'], self.debug, self.loglevel)
+			self.processor = recv_resp(self, self.decoded['data'])
 			
 		if (self.getType() == frametype.CMD_RESP.value):
 			logging.info("Frame Type is CMD_RESP")
-			self.processor = cmd_resp(self, self.decoded['data'], self.debug, self.loglevel)
+			self.processor = cmd_resp(self, self.decoded['data'])

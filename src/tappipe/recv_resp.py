@@ -8,22 +8,15 @@ def getHex(bytes):
 	return " ".join("{0:02x}".format(x) for x in bytes)
 
 class recv_resp:
-	debug = False
-	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
-	decoded = {'rxBuffers':None,'txBuffers':None,'packet_number':None,'slot_number':None,'packets':[]}
+	decoded = {}
 	processor = None
-	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
+	def __init__(self, parent=None, bytes=[]):
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {'rxBuffers':None,'txBuffers':None,'packet_number':None,'slot_number':None,'packets':[]}
 		self.processor = None
-
 
 		if (len(self.bytes) < 2):
 			logging.info("Recv Resp: Not enough bytes")
@@ -81,9 +74,9 @@ class recv_resp:
 			if (position >= len(self.bytes)):
 				return
 			if (self.bytes[position] == pvtype.POWER_REPORT.value):
-				self.decoded['packets'].append(power_report(self, self.bytes[position:position+packetLength], self.debug, self.loglevel))
+				self.decoded['packets'].append(power_report(self, self.bytes[position:position+packetLength]))
 			if (self.bytes[position] == pvtype.TOPOLOGY_REPORT.value):
-				self.decoded['packets'].append(topology_report(self, self.bytes[position:position+packetLength], self.debug, self.loglevel))
+				self.decoded['packets'].append(topology_report(self, self.bytes[position:position+packetLength]))
 			position += packetLength
 	def setDebug(self, debug):
 		self.debug = debug

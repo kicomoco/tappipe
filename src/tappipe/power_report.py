@@ -4,16 +4,10 @@ import logging
 from .stringhex import stringhex
 
 class power_report:
-	debug = False
-	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
-	decoded = {'nodeid':None,'shortaddress':None,'vin':None,'vout':None,'duty':None,'ampsin':None,'temp':None,'slot':None,'rssi':None}
-	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
+	decoded = {}
+	def __init__(self, parent=None, bytes=[]):
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {'nodeid':None,'shortaddress':None,'vin':None,'vout':None,'duty':None,'ampsin':None,'temp':None,'slot':None,'rssi':None}

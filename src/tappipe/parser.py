@@ -3,17 +3,10 @@ from .stringhex import stringhex
 import logging
 
 class parser:
-	debug = False
-	loglevel = logging.NOTSET
 	bytes = []
 	startFrame = bytearray([0xff,0x7e,0x07])                                                                                                                                    
 	endFrame = bytearray([0x7e,0x08])
-	def __init__(self, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
-		logging.basicConfig(level=self.loglevel)
+	def __init__(self, bytes=[]):
 		self.bytes = bytearray(bytes)
 	def __add__(self, other):
 		self.bytes += other
@@ -34,7 +27,7 @@ class parser:
 		else:
 			logging.info("Frame End Pattern not found")
 		if (frameStarted != -1 and frameEnded != -1):
-			fr = frame(self.bytes[frameStarted:frameEnded+len(self.endFrame)], self.debug, self.loglevel)
+			fr = frame(self.bytes[frameStarted:frameEnded+len(self.endFrame)])
 			self.bytes = self.bytes[frameEnded+len(self.endFrame):]
 			logging.debug("Frame found with bytes %s", stringhex(fr.bytes))
 			if (fr.failedCRC):

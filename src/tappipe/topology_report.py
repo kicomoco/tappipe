@@ -3,16 +3,10 @@ from .enums import pvtype
 import logging
 
 class topology_report:
-	debug = False
-	loglevel = logging.NOTSET
 	parent = None
 	bytes = []
 	decoded = {}
-	def __init__(self, parent=None, bytes=[], debug=False, logging=logging.NOTSET):
-		self.loglevel = logging
-		self.debug = debug
-		if (self.debug):
-			self.loglevel = logging.DEBUG
+	def __init__(self, parent=None, bytes=[]):
 		self.parent = parent
 		self.bytes = bytes
 		self.decoded = {}
